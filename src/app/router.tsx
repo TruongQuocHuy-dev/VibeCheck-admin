@@ -4,6 +4,9 @@ import { ProtectedRoute } from '../shared/components/ProtectedRoute'
 import { LoginPage } from '../features/auth/pages/LoginPage'
 import { DashboardPage } from '../features/dashboard/pages/DashboardPage'
 import { UserListPage } from '../features/user/pages/UserListPage'
+import { VibeModerationPage } from '../features/vibe'
+import { StoryModerationPage } from '../features/story'
+import { BlacklistPage } from '../features/moderation'
 
 export const router = createBrowserRouter([
   {
@@ -24,6 +27,18 @@ export const router = createBrowserRouter([
           {
             path: 'users',
             element: <UserListPage />,
+          },
+          {
+            path: 'vibes',
+            element: <VibeModerationPage />,
+          },
+          {
+            path: 'stories',
+            element: <StoryModerationPage />,
+          },
+          {
+            path: 'blacklist',
+            element: <BlacklistPage />,
           },
         ],
       },

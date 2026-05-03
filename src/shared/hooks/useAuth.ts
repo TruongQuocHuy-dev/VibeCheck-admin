@@ -6,6 +6,8 @@ export type AuthUser = {
   email: string
   role: 'user' | 'admin' | 'mod'
   status: 'active' | 'banned'
+  fullName?: string
+  displayName?: string
   name?: string
 }
 

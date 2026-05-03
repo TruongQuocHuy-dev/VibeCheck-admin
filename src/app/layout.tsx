@@ -1,25 +1,42 @@
 import { useState } from 'react'
 import { NavLink, Outlet } from 'react-router-dom'
 import { useAuth } from '../shared/hooks/useAuth'
-import { Badge } from '../shared/ui/Badge'
-import { Button } from '../shared/ui/Button'
 
-const navItems = [
+const mainItems = [
   {
-    label: 'Dashboard',
+    label: 'Bảng điều khiển',
     to: '/admin',
-    icon: 'D',
+    icon: 'dashboard',
   },
   {
-    label: 'Users',
+    label: 'Người dùng',
     to: '/admin/users',
-    icon: 'U',
+    icon: 'users',
+  },
+]
+
+const moderationItems = [
+  {
+    label: 'Kiểm duyệt Vibes',
+    to: '/admin/vibes',
+    icon: 'vibe',
+  },
+  {
+    label: 'Kiểm duyệt Stories',
+    to: '/admin/stories',
+    icon: 'story',
+  },
+  {
+    label: 'Quản lý Blacklist',
+    to: '/admin/blacklist',
+    icon: 'blacklist',
   },
 ]
 
 export function AppLayout() {
   const { user, logout } = useAuth()
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false)
+  const [isModerationOpen, setIsModerationOpen] = useState(true)
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
 
   return (
@@ -43,7 +60,7 @@ export function AppLayout() {
             <button 
               onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
               className="flex h-8 w-8 items-center justify-center rounded-lg hover:bg-[#171717] transition-colors"
-              title={isSidebarCollapsed ? "Expand" : "Collapse"}
+              title={isSidebarCollapsed ? "Mở rộng" : "Thu gọn"}
             >
               <svg className="h-4 w-4 text-[#b4b4b4]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={isSidebarCollapsed ? "M13 5l7 7-7 7M5 5l7 7-7 7" : "M11 19l-7-7 7-7m8 14l-7-7 7-7"} />
@@ -53,7 +70,8 @@ export function AppLayout() {
 
           {/* Navigation */}
           <nav className="flex-1 space-y-1 overflow-y-auto custom-scrollbar">
-            {navItems.map((item) => (
+            {/* Main Items */}
+            {mainItems.map((item) => (
               <NavLink
                 key={item.to}
                 to={item.to}
@@ -70,11 +88,12 @@ export function AppLayout() {
                 title={isSidebarCollapsed ? item.label : ''}
               >
                 <span className="flex h-5 w-5 shrink-0 items-center justify-center opacity-70 group-hover:opacity-100">
-                  {item.icon === 'D' ? (
+                  {item.icon === 'dashboard' && (
                     <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
                     </svg>
-                  ) : (
+                  )}
+                  {item.icon === 'users' && (
                     <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                     </svg>
@@ -83,6 +102,70 @@ export function AppLayout() {
                 {!isSidebarCollapsed && <span className="truncate whitespace-nowrap">{item.label}</span>}
               </NavLink>
             ))}
+
+            {/* Moderation Group */}
+            <div className="pt-4">
+              {!isSidebarCollapsed && (
+                <button 
+                  onClick={() => setIsModerationOpen(!isModerationOpen)}
+                  className="group flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm font-medium text-[#b4b4b4] transition-all duration-200 hover:bg-[#171717] hover:text-white"
+                >
+                  <div className="flex items-center gap-3">
+                    <span className="flex h-5 w-5 shrink-0 items-center justify-center opacity-70 group-hover:opacity-100">
+                      <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                      </svg>
+                    </span>
+                    Kiểm duyệt nội dung
+                  </div>
+                  <svg className={['h-3 w-3 transition-transform duration-300', isModerationOpen ? 'rotate-180' : ''].join(' ')} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+              )}
+
+              <div className={[
+                'mt-1 space-y-1 transition-all duration-300 overflow-hidden',
+                !isSidebarCollapsed && !isModerationOpen ? 'max-h-0 opacity-0' : 'max-h-40 opacity-100'
+              ].join(' ')}>
+                {moderationItems.map((item) => (
+                  <NavLink
+                    key={item.to}
+                    to={item.to}
+                    end
+                    className={({ isActive }) =>
+                      [
+                        'group flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200',
+                        isActive
+                          ? 'bg-[#262626] text-white'
+                          : 'text-[#b4b4b4] hover:bg-[#171717] hover:text-white',
+                        isSidebarCollapsed ? 'justify-center' : 'pl-6'
+                      ].join(' ')
+                    }
+                    title={isSidebarCollapsed ? item.label : ''}
+                  >
+                    <span className="flex h-5 w-5 shrink-0 items-center justify-center opacity-70 group-hover:opacity-100">
+                      {item.icon === 'vibe' && (
+                        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                        </svg>
+                      )}
+                      {item.icon === 'story' && (
+                        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 2m6-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      )}
+                      {item.icon === 'blacklist' && (
+                        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+                        </svg>
+                      )}
+                    </span>
+                    {!isSidebarCollapsed && <span className="truncate whitespace-nowrap">{item.label}</span>}
+                  </NavLink>
+                ))}
+              </div>
+            </div>
           </nav>
 
           {/* User Profile Footer (Mini version when collapsed) */}
@@ -93,8 +176,8 @@ export function AppLayout() {
               </div>
               {!isSidebarCollapsed && (
                 <div className="flex flex-1 flex-col overflow-hidden">
-                  <p className="truncate text-sm font-medium">{user?.fullName || user?.displayName || 'Admin'}</p>
-                  <p className="truncate text-[10px] text-[#676767] uppercase tracking-wider">{user?.role || 'Moderator'}</p>
+                  <p className="truncate text-sm font-medium">{user?.fullName || user?.displayName || 'Quản trị viên'}</p>
+                  <p className="truncate text-[10px] text-[#676767] uppercase tracking-wider">{user?.role === 'admin' ? 'Quản trị viên' : 'Kiểm duyệt viên'}</p>
                 </div>
               )}
             </div>
@@ -109,7 +192,7 @@ export function AppLayout() {
             <span className="cursor-default hover:text-white">Admin</span>
             <span className="text-[#4d4d4d]">/</span>
             <span className="font-medium text-white uppercase tracking-wide">
-              {navItems.find(i => window.location.pathname.endsWith(i.to))?.label || 'Dashboard'}
+              {[...mainItems, ...moderationItems].find(i => window.location.pathname.endsWith(i.to))?.label || 'Bảng điều khiển'}
             </span>
           </div>
 
