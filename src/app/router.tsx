@@ -7,6 +7,7 @@ import { UserListPage } from '../features/user/pages/UserListPage'
 import { VibeModerationPage } from '../features/vibe'
 import { StoryModerationPage } from '../features/story'
 import { BlacklistPage } from '../features/moderation'
+import { ReportManagementPage } from '../features/report'
 
 export const router = createBrowserRouter([
   {
@@ -39,6 +40,10 @@ export const router = createBrowserRouter([
           {
             path: 'blacklist',
             element: <BlacklistPage />,
+          },
+          {
+            path: 'reports',
+            element: <ReportManagementPage />,
           },
         ],
       },
