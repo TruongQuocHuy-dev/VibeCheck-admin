@@ -8,6 +8,7 @@ import { VibeModerationPage } from '../features/vibe'
 import { StoryModerationPage } from '../features/story'
 import { BlacklistPage } from '../features/moderation'
 import { ReportManagementPage } from '../features/report'
+import { AnalyticsPage } from '../features/analytics'
 
 export const router = createBrowserRouter([
   {
@@ -44,6 +45,10 @@ export const router = createBrowserRouter([
           {
             path: 'reports',
             element: <ReportManagementPage />,
+          },
+          {
+            path: 'analytics',
+            element: <AnalyticsPage />,
           },
         ],
       },
