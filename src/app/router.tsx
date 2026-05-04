@@ -9,6 +9,7 @@ import { StoryModerationPage } from '../features/story'
 import { BlacklistPage } from '../features/moderation'
 import { ReportManagementPage } from '../features/report'
 import { AnalyticsPage } from '../features/analytics'
+import { SettingsPage } from '../features/settings'
 
 export const router = createBrowserRouter([
   {
@@ -49,6 +50,10 @@ export const router = createBrowserRouter([
           {
             path: 'analytics',
             element: <AnalyticsPage />,
+          },
+          {
+            path: 'settings',
+            element: <SettingsPage />,
           },
         ],
       },
