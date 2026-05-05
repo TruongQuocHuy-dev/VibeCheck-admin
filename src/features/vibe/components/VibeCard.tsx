@@ -13,7 +13,7 @@ export function VibeCard({ vibe, onPreview, onAction }: VibeCardProps) {
 
   return (
     <div className={`group relative overflow-hidden rounded-2xl border bg-background-card transition-all duration-300 hover:shadow-2xl ${
-      vibe.reports.length > 0 ? 'border-status-banned/50 shadow-status-banned/10' : 'border-[#262626]'
+      (vibe.reports?.length || 0) > 0 ? 'border-status-banned/50 shadow-status-banned/10' : 'border-[#262626]'
     }`}>
       {/* Media Thumbnail */}
       <div 
@@ -52,18 +52,18 @@ export function VibeCard({ vibe, onPreview, onAction }: VibeCardProps) {
         </div>
       </div>
 
-      <ReportBadge count={vibe.reports.length} />
+      <ReportBadge count={vibe.reports?.length || 0} />
 
       {/* Info */}
       <div className="p-4">
         <div className="flex items-center gap-2 mb-3">
           <img 
-            src={vibe.user.avatar || 'https://via.placeholder.com/32'} 
+            src={vibe.user?.avatar || 'https://via.placeholder.com/32'} 
             className="h-6 w-6 rounded-full border border-[#262626]"
             alt=""
           />
           <span className="text-xs font-semibold text-text-primary truncate">
-            {vibe.user.fullName || vibe.user.displayName}
+            {vibe.user?.fullName || vibe.user?.displayName || 'Unknown User'}
           </span>
           <span className="ml-auto text-[10px] text-text-muted">
             {new Date(vibe.createdAt).toLocaleDateString('vi-VN')}

@@ -6,7 +6,7 @@ interface StoryCardProps {
 }
 
 export function StoryCard({ story, onClick }: StoryCardProps) {
-  const isReported = story.reports.length > 0;
+  const isReported = (story.reports?.length || 0) > 0;
 
   return (
     <div 
@@ -29,10 +29,10 @@ export function StoryCard({ story, onClick }: StoryCardProps) {
       
       <div className="absolute bottom-3 left-3 right-3 flex items-center gap-2">
         <div className="h-8 w-8 rounded-full border-2 border-primary p-0.5">
-          <img src={story.user.avatar} className="h-full w-full rounded-full object-cover" alt="" />
+          <img src={story.user?.avatar || 'https://via.placeholder.com/32'} className="h-full w-full rounded-full object-cover" alt="" />
         </div>
         <div className="flex-1 overflow-hidden">
-          <p className="truncate text-[10px] font-bold text-white">{story.user.displayName}</p>
+          <p className="truncate text-[10px] font-bold text-white">{story.user?.displayName || 'Unknown User'}</p>
           <p className="text-[8px] text-white/60">
             {new Date(story.createdAt).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}
           </p>
@@ -41,7 +41,7 @@ export function StoryCard({ story, onClick }: StoryCardProps) {
 
       {isReported && (
         <div className="absolute top-3 right-3 flex h-6 w-6 items-center justify-center rounded-full bg-status-banned shadow-lg">
-          <span className="text-[10px] font-bold text-white">{story.reports.length}</span>
+          <span className="text-[10px] font-bold text-white">{story.reports?.length || 0}</span>
         </div>
       )}
 

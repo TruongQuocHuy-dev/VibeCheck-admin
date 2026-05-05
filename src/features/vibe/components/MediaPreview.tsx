@@ -39,9 +39,9 @@ export function MediaPreview({ vibe, onClose }: MediaPreviewProps) {
 
         <div className="p-6 bg-background-card">
           <div className="flex items-center gap-4 mb-4">
-            <img src={vibe.user.avatar} className="h-10 w-10 rounded-full border border-[#262626]" alt="" />
+            <img src={vibe.user?.avatar || 'https://via.placeholder.com/40'} className="h-10 w-10 rounded-full border border-[#262626]" alt="" />
             <div>
-              <p className="font-semibold text-text-primary">{vibe.user.fullName || vibe.user.displayName}</p>
+              <p className="font-semibold text-text-primary">{vibe.user?.fullName || vibe.user?.displayName || 'Unknown User'}</p>
               <p className="text-xs text-text-muted">{new Date(vibe.createdAt).toLocaleString('vi-VN')}</p>
             </div>
           </div>
@@ -49,11 +49,11 @@ export function MediaPreview({ vibe, onClose }: MediaPreviewProps) {
             {vibe.caption || 'No caption provided.'}
           </p>
 
-          {vibe.reports.length > 0 && (
+          {(vibe.reports?.length || 0) > 0 && (
             <div className="mt-6 rounded-2xl bg-status-banned/10 p-4 border border-status-banned/20">
-              <p className="text-xs font-bold uppercase tracking-wider text-status-banned mb-2">Báo cáo vi phạm ({vibe.reports.length})</p>
+              <p className="text-xs font-bold uppercase tracking-wider text-status-banned mb-2">Báo cáo vi phạm ({vibe.reports?.length || 0})</p>
               <div className="space-y-3 max-h-[150px] overflow-y-auto custom-scrollbar">
-                {vibe.reports.map((report) => (
+                {vibe.reports?.map((report) => (
                   <div key={report._id} className="text-xs">
                     <span className="font-semibold text-text-primary">@{report.user.displayName}: </span>
                     <span className="text-text-secondary">{report.reason}</span>

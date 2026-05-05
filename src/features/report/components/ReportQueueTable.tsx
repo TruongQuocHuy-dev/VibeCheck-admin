@@ -31,7 +31,7 @@ export function ReportQueueTable({ onSelect }: ReportQueueTableProps) {
     );
   }
 
-  if (data?.reports.length === 0) {
+  if (!data || data.reports?.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center bg-[#0d0d0d]/30 rounded-3xl border border-dashed border-[#262626]">
         <div className="mb-4 rounded-full bg-status-active/10 p-6 text-status-active">
@@ -59,7 +59,7 @@ export function ReportQueueTable({ onSelect }: ReportQueueTableProps) {
           </tr>
         </thead>
         <tbody className="divide-y divide-[#262626]">
-          {data?.reports.map((report) => (
+          {data.reports?.map((report) => (
             <tr 
               key={report._id} 
               onClick={() => onSelect(report)}

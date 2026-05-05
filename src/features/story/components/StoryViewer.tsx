@@ -27,9 +27,9 @@ export function StoryViewer({ story, onClose, onDelete }: StoryViewerProps) {
         </div>
 
         <div className="absolute top-8 left-6 z-10 flex items-center gap-3">
-          <img src={story.user.avatar} className="h-10 w-10 rounded-full border-2 border-primary" alt="" />
+          <img src={story.user?.avatar || 'https://via.placeholder.com/40'} className="h-10 w-10 rounded-full border-2 border-primary" alt="" />
           <div>
-            <p className="text-sm font-bold text-white">{story.user.displayName}</p>
+            <p className="text-sm font-bold text-white">{story.user?.displayName || 'Unknown User'}</p>
             <p className="text-[10px] text-white/60">{new Date(story.createdAt).toLocaleString()}</p>
           </div>
         </div>
@@ -46,7 +46,7 @@ export function StoryViewer({ story, onClose, onDelete }: StoryViewerProps) {
           <div className="flex items-center justify-between">
             <div className="text-white">
               <p className="text-xs font-bold uppercase tracking-widest text-primary mb-1">Reports</p>
-              <p className="text-xl font-bold">{story.reports.length} Báo cáo</p>
+              <p className="text-xl font-bold">{story.reports?.length || 0} Báo cáo</p>
             </div>
             <button 
               onClick={() => {
@@ -61,9 +61,9 @@ export function StoryViewer({ story, onClose, onDelete }: StoryViewerProps) {
             </button>
           </div>
           
-          {story.reports.length > 0 && (
+          {(story.reports?.length || 0) > 0 && (
             <div className="mt-6 space-y-2 max-h-[120px] overflow-y-auto custom-scrollbar">
-              {story.reports.map((r) => (
+              {story.reports?.map((r) => (
                 <div key={r._id} className="rounded-xl bg-white/5 p-3 text-xs text-white/80">
                   {r.reason}
                 </div>
