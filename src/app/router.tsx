@@ -10,6 +10,7 @@ import { BlacklistPage } from '../features/moderation'
 import { ReportManagementPage } from '../features/report'
 import { AnalyticsPage } from '../features/analytics'
 import { SettingsPage } from '../features/settings'
+import { CMSPages } from '../features/cms'
 
 export const router = createBrowserRouter([
   {
@@ -54,6 +55,10 @@ export const router = createBrowserRouter([
           {
             path: 'settings',
             element: <SettingsPage />,
+          },
+          {
+            path: 'cms',
+            element: <CMSPages />,
           },
         ],
       },
