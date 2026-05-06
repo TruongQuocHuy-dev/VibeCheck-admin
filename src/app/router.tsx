@@ -12,6 +12,7 @@ import { AnalyticsPage } from '../features/analytics'
 import { SettingsPage } from '../features/settings'
 import { CMSPages } from '../features/cms'
 import { NotificationHistoryPage } from '../features/notification'
+import { ProfilePage } from '../features/profile'
 
 export const router = createBrowserRouter([
   {
@@ -64,6 +65,10 @@ export const router = createBrowserRouter([
           {
             path: 'notifications',
             element: <NotificationHistoryPage />,
+          },
+          {
+            path: 'profile',
+            element: <ProfilePage />,
           },
         ],
       },

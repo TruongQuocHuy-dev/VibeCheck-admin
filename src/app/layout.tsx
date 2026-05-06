@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { NavLink, Outlet } from 'react-router-dom'
+import { NavLink, Outlet, Link } from 'react-router-dom'
 import { useAuth } from '../shared/hooks/useAuth'
 import { NotificationBell } from '../features/notification'
 
@@ -267,18 +267,26 @@ export function AppLayout() {
                         <p className="text-xs text-[#676767] truncate">{user?.email || 'admin@vibecheck.app'}</p>
                       </div>
                       <div className="space-y-1">
-                        <button className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-[#b4b4b4] hover:bg-[#262626] hover:text-white transition-colors text-left">
+                        <Link 
+                          to="/admin/profile" 
+                          onClick={() => setIsUserMenuOpen(false)}
+                          className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-[#b4b4b4] hover:bg-[#262626] hover:text-white transition-colors text-left"
+                        >
                           <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                           </svg>
                           Thông tin cá nhân
-                        </button>
-                        <button className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-[#b4b4b4] hover:bg-[#262626] hover:text-white transition-colors text-left">
+                        </Link>
+                        <Link 
+                          to="/admin/profile?tab=security" 
+                          onClick={() => setIsUserMenuOpen(false)}
+                          className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-[#b4b4b4] hover:bg-[#262626] hover:text-white transition-colors text-left"
+                        >
                           <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
                           </svg>
                           Đổi mật khẩu
-                        </button>
+                        </Link>
                         <div className="h-[1px] bg-[#262626] my-1" />
                         <button 
                           onClick={logout}
