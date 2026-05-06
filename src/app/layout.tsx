@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { NavLink, Outlet } from 'react-router-dom'
 import { useAuth } from '../shared/hooks/useAuth'
+import { NotificationBell } from '../features/notification'
 
 const mainItems = [
   {
@@ -239,12 +240,7 @@ export function AppLayout() {
 
           <div className="flex items-center gap-4">
              {/* Notifications */}
-             <button className="relative flex h-8 w-8 items-center justify-center rounded-lg hover:bg-[#171717] transition-colors text-[#b4b4b4] hover:text-white">
-                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                </svg>
-                <span className="absolute top-1.5 right-1.5 flex h-2 w-2 rounded-full bg-primary border border-[#0d0d0d]" />
-             </button>
+             <NotificationBell />
 
              <div className="h-6 w-[1px] bg-[#262626]" />
 

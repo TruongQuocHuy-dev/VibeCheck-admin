@@ -11,6 +11,7 @@ import { ReportManagementPage } from '../features/report'
 import { AnalyticsPage } from '../features/analytics'
 import { SettingsPage } from '../features/settings'
 import { CMSPages } from '../features/cms'
+import { NotificationHistoryPage } from '../features/notification'
 
 export const router = createBrowserRouter([
   {
@@ -59,6 +60,10 @@ export const router = createBrowserRouter([
           {
             path: 'cms',
             element: <CMSPages />,
+          },
+          {
+            path: 'notifications',
+            element: <NotificationHistoryPage />,
           },
         ],
       },
