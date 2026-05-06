@@ -40,6 +40,7 @@ export function UserListPage() {
         status: newStatus,
         reason,
       });
+      setSelectedUser(null);
       // TODO: Implement Toast success
       console.log('Success: User status updated');
     } catch (error: any) {

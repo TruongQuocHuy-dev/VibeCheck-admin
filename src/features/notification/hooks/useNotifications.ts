@@ -5,7 +5,7 @@ import { useSocket } from './useSocket';
 import { WEBSOCKET_EVENTS } from '../constants';
 import type { AppNotification, NotificationQueryParams, NotificationResponse } from '../types';
 
-export const useNotifications = (params: NotificationQueryParams) => {
+export const useNotifications = (params: NotificationQueryParams, options: { enabled?: boolean } = {}) => {
   const queryClient = useQueryClient();
   const { socket } = useSocket();
 
@@ -15,6 +15,7 @@ export const useNotifications = (params: NotificationQueryParams) => {
     queryKey,
     queryFn: () => fetchNotifications(params),
     staleTime: 60000, // 1 minute
+    enabled: options.enabled !== false,
   });
 
   useEffect(() => {

@@ -10,9 +10,9 @@ export const useSocket = () => {
   const [isConnected, setIsConnected] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const token = localStorage.getItem('vibe_token');
+  
   useEffect(() => {
-    const token = localStorage.getItem('vibe_token');
-
     if (!token) {
       setError('No authentication token found for socket connection');
       return;
@@ -50,7 +50,7 @@ export const useSocket = () => {
         socket.disconnect();
       }
     };
-  }, []);
+  }, [token]);
 
   return {
     socket: socketRef.current,

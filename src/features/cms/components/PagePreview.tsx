@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Monitor, Tablet, Smartphone, X } from 'lucide-react';
+import DOMPurify from 'dompurify';
 
 interface PagePreviewProps {
   title: string;
@@ -59,7 +60,7 @@ export const PagePreview: React.FC<PagePreviewProps> = ({ title, content, onClos
           )}
           
           <div className="prose prose-invert max-w-none p-10 custom-preview">
-             <div dangerouslySetInnerHTML={{ __html: content }} />
+             <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(content) }} />
           </div>
         </div>
       </div>

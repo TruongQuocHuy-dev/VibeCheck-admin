@@ -21,7 +21,7 @@ export const NotificationDropdown: React.FC<NotificationDropdownProps> = ({ isOp
   const { notifications, isLoading, unreadCount } = useNotifications({
     limit: 20,
     unread: activeTab === 'unread' ? true : undefined,
-  });
+  }, { enabled: isOpen });
 
   const { markAsRead, markAllAsRead, isMarkingAllRead } = useNotificationActions();
 
