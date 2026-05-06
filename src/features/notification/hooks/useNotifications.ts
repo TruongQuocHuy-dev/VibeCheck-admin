@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { fetchNotifications } from '../services';
 import { useSocket } from './useSocket';
@@ -8,6 +8,7 @@ import type { AppNotification, NotificationQueryParams, NotificationResponse } f
 export const useNotifications = (params: NotificationQueryParams, options: { enabled?: boolean } = {}) => {
   const queryClient = useQueryClient();
   const { socket } = useSocket();
+  const invalidateTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const queryKey = ['admin-notifications', params];
 
@@ -54,8 +55,11 @@ export const useNotifications = (params: NotificationQueryParams, options: { ena
       });
 
       // Also update the 'all' unread count query if we are currently looking at a filtered view
-      // This ensures the bell icon is always accurate if it relies on a separate global query
-      queryClient.invalidateQueries({ queryKey: ['admin-notifications'] });
+      // Debounce the invalidation to prevent spam when multiple notifications arrive
+      if (invalidateTimerRef.current) clearTimeout(invalidateTimerRef.current);
+      invalidateTimerRef.current = setTimeout(() => {
+        queryClient.invalidateQueries({ queryKey: ['admin-notifications'] });
+      }, 1000);
     };
 
     socket.on(WEBSOCKET_EVENTS.ADMIN_NEW_REPORT, handleNewNotification);
@@ -64,6 +68,7 @@ export const useNotifications = (params: NotificationQueryParams, options: { ena
     socket.on(WEBSOCKET_EVENTS.ADMIN_BROADCAST, handleNewNotification);
 
     return () => {
+      if (invalidateTimerRef.current) clearTimeout(invalidateTimerRef.current);
       socket.off(WEBSOCKET_EVENTS.ADMIN_NEW_REPORT, handleNewNotification);
       socket.off(WEBSOCKET_EVENTS.ADMIN_USER_BANNED, handleNewNotification);
       socket.off(WEBSOCKET_EVENTS.ADMIN_SYSTEM_ALERT, handleNewNotification);

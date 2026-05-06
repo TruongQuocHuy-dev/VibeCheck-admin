@@ -53,6 +53,13 @@ export const NotificationDropdown: React.FC<NotificationDropdownProps> = ({ isOp
     return () => window.removeEventListener('keydown', handleEsc);
   }, [isOpen, onClose]);
 
+  // Focus management
+  useEffect(() => {
+    if (isOpen) {
+      dropdownRef.current?.focus();
+    }
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   // Calculate position relative to anchor
@@ -77,9 +84,10 @@ export const NotificationDropdown: React.FC<NotificationDropdownProps> = ({ isOp
     <div 
       ref={dropdownRef}
       style={{ top, right }}
-      className="fixed z-[100] w-[380px] max-w-[calc(100vw-32px)] overflow-hidden rounded-2xl border border-[#262626] bg-[#121212] shadow-2xl animate-in fade-in slide-in-from-top-4 duration-200"
+      className="fixed z-[100] w-[380px] max-w-[calc(100vw-32px)] overflow-hidden rounded-2xl border border-[#262626] bg-[#121212] shadow-2xl animate-in fade-in slide-in-from-top-4 duration-200 focus:outline-none"
       role="dialog"
       aria-label="Notifications"
+      tabIndex={-1}
     >
       {/* Header */}
       <div className="flex items-center justify-between border-b border-[#262626] p-4 bg-[#0d0d0d]">

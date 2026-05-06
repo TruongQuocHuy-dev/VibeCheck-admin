@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback } from 'react'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { api } from '../lib/api'
 
 export type AuthUser = {
@@ -14,47 +15,36 @@ export type AuthUser = {
 const AUTH_TOKEN_KEY = 'vibe_token'
 
 export function useAuth() {
-  const [user, setUser] = useState<AuthUser | null>(null)
-  const [loading, setLoading] = useState(true)
+  const queryClient = useQueryClient()
 
-  const fetchProfile = useCallback(async () => {
-    const token = localStorage.getItem(AUTH_TOKEN_KEY)
+  const { data: user, isLoading: loading, refetch } = useQuery({
+    queryKey: ['auth-user'],
+    queryFn: async () => {
+      const token = localStorage.getItem(AUTH_TOKEN_KEY)
+      if (!token) return null
 
-    console.log('useAuth.fetchProfile token=', token)
-
-    if (!token) {
-      setUser(null)
-      setLoading(false)
-      return
-    }
-
-    try {
-      console.log('useAuth: calling /users/profile')
-      const { data } = await api.get('/users/profile')
-      console.log('useAuth: profile response=', data)
-      setUser(data.data?.user ?? data.user ?? data)
-    } catch {
-      localStorage.removeItem(AUTH_TOKEN_KEY)
-      setUser(null)
-    } finally {
-      setLoading(false)
-    }
-  }, [])
-
-  useEffect(() => {
-    fetchProfile()
-  }, [fetchProfile])
+      try {
+        const { data } = await api.get('/users/profile')
+        return data.data?.user ?? data.user ?? data
+      } catch (error) {
+        localStorage.removeItem(AUTH_TOKEN_KEY)
+        return null
+      }
+    },
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    retry: false,
+  })
 
   const logout = useCallback(() => {
     localStorage.removeItem(AUTH_TOKEN_KEY)
-    setUser(null)
+    queryClient.setQueryData(['auth-user'], null)
     window.location.href = '/login'
-  }, [])
+  }, [queryClient])
 
   return {
-    user,
+    user: user || null,
     loading,
     logout,
-    refetch: fetchProfile,
+    refetch,
   }
 }

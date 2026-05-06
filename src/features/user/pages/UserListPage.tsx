@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useUsers } from '../hooks/useUsers';
 import { useBanUser } from '../hooks/useBanUser';
@@ -19,7 +19,7 @@ export function UserListPage() {
   const { data, isLoading } = useUsers({ page, limit, status, search });
   const banMutation = useBanUser();
 
-  const handleParamChange = (key: string, value: string) => {
+  const handleParamChange = useCallback((key: string, value: string) => {
     const newParams = new URLSearchParams(searchParams);
     if (value && value !== 'all') {
       newParams.set(key, value);
@@ -28,7 +28,7 @@ export function UserListPage() {
     }
     if (key !== 'page') newParams.set('page', '1'); // Reset to page 1 on filter change
     setSearchParams(newParams);
-  };
+  }, [searchParams, setSearchParams]);
 
   const handleBan = async (reason: string) => {
     if (!selectedUser) return;

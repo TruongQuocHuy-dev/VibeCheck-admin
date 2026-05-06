@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { usePages } from '../hooks/usePages';
 import { usePageEditor } from '../hooks/usePageEditor';
 import { PageList } from '../components/PageList';
@@ -10,30 +11,31 @@ import { VersionHistory } from '../components/VersionHistory';
 import type { CMSPage, PageVersion } from '../types';
 import { Button } from '../../../shared/ui/Button';
 import { Skeleton } from '../../../shared/ui/Skeleton';
-import { Plus, ChevronLeft, Save, Send, Eye, History, Layout, Info } from 'lucide-react';
+import { Plus, ChevronLeft, Save, Send, Eye, Layout, Info } from 'lucide-react';
 
 export const CMSPages: React.FC = () => {
-  const { pages, isLoading, savePage, isSaving } = usePages();
-  const [view, setView] = useState<'list' | 'edit' | 'history'>('list');
-  const [editingPage, setEditingPage] = useState<CMSPage | undefined>(undefined);
+  const { pages, isLoading } = usePages();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [showPreview, setShowPreview] = useState(false);
+
+  const view = (searchParams.get('v') as 'list' | 'edit' | 'history') || 'list';
+  const slug = searchParams.get('slug');
+
+  const editingPage = pages.find(p => p.slug === slug);
 
   // Editor hook
   const editor = usePageEditor(editingPage);
 
   const handleEdit = (page: CMSPage) => {
-    setEditingPage(page);
-    setView('edit');
+    setSearchParams({ v: 'edit', slug: page.slug });
   };
 
   const handleCreate = () => {
-    setEditingPage(undefined);
-    setView('edit');
+    setSearchParams({ v: 'edit' });
   };
 
   const handleBack = () => {
-    setView('list');
-    setEditingPage(undefined);
+    setSearchParams({});
   };
 
   const handlePublish = async () => {
@@ -71,8 +73,8 @@ export const CMSPages: React.FC = () => {
           <PageList 
             pages={pages} 
             onEdit={handleEdit}
-            onPreview={(p) => { setEditingPage(p); setShowPreview(true); }}
-            onViewHistory={(p) => { setEditingPage(p); setView('history'); }}
+            onPreview={(p) => { setSearchParams({ v: 'list', slug: p.slug }); setShowPreview(true); }}
+            onViewHistory={(p) => { setSearchParams({ v: 'history', slug: p.slug }); }}
             onDelete={(id) => console.log('Delete', id)}
           />
         )}
@@ -140,7 +142,7 @@ export const CMSPages: React.FC = () => {
             </>
           )}
           {view === 'history' && (
-            <Button variant="secondary" onClick={() => setView('edit')}>
+            <Button variant="secondary" onClick={() => setSearchParams({ v: 'edit', slug: slug || '' })}>
               Quay lại soạn thảo
             </Button>
           )}
