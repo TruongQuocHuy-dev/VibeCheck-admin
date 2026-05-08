@@ -3,10 +3,11 @@ import { useAuth } from '../hooks/useAuth'
 import { Skeleton } from '../ui/Skeleton'
 
 type ProtectedRouteProps = {
-  allowedRoles?: Array<'admin' | 'mod'>
+  allowedRoles?: Array<'admin' | 'user'>
+  redirectTo?: string
 }
 
-export function ProtectedRoute({ allowedRoles }: ProtectedRouteProps) {
+export function ProtectedRoute({ allowedRoles, redirectTo = '/login' }: ProtectedRouteProps) {
   const location = useLocation()
   const { user, loading } = useAuth()
 
@@ -34,7 +35,7 @@ export function ProtectedRoute({ allowedRoles }: ProtectedRouteProps) {
   }
 
   if (allowedRoles && !allowedRoles.some((role) => role === user.role)) {
-    return <Navigate to="/login" replace />
+    return <Navigate to={redirectTo} replace />
   }
 
   return <Outlet />

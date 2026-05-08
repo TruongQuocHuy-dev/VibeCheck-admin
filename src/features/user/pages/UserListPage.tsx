@@ -12,11 +12,17 @@ export function UserListPage() {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
   const page = Number(searchParams.get('page') || '1');
-  const limit = Number(searchParams.get('limit') || '20');
+  const limit = Number(searchParams.get('limit') || '10');
   const status = (searchParams.get('status') || 'all') as UserStatus | 'all';
   const search = searchParams.get('search') || '';
 
-  const { data, isLoading } = useUsers({ page, limit, status, search });
+  const { data, isLoading } = useUsers({
+    page,
+    limit,
+    status,
+    search,
+    role: 'user',
+  });
   const banMutation = useBanUser();
 
   const handleParamChange = useCallback((key: string, value: string) => {
@@ -52,9 +58,9 @@ export function UserListPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-semibold tracking-tight text-text-primary">Quản lý người dùng</h1>
+        <h1 className="text-3xl font-semibold tracking-tight text-text-primary">Người dùng thường</h1>
         <p className="mt-2 text-text-secondary">
-          Xem danh sách, tìm kiếm và kiểm soát trạng thái hoạt động của người dùng hệ thống.
+          Xem danh sách, tìm kiếm và kiểm soát trạng thái hoạt động của người dùng cơ bản.
         </p>
       </div>
 

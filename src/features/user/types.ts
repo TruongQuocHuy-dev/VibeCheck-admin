@@ -1,5 +1,5 @@
 export type UserStatus = 'active' | 'banned';
-export type UserRole = 'user' | 'admin' | 'mod';
+export type UserRole = 'user' | 'admin';
 
 export interface User {
   _id: string;
@@ -22,6 +22,7 @@ export interface UserQueryParams {
   limit?: number;
   status?: UserStatus | 'all';
   search?: string;
+  role?: string;
 }
 
 export interface UserResponse {

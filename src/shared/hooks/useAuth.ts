@@ -5,7 +5,7 @@ import { api } from '../lib/api'
 export type AuthUser = {
   _id: string
   email: string
-  role: 'user' | 'admin' | 'mod'
+  role: 'user' | 'admin'
   status: 'active' | 'banned'
   fullName?: string
   displayName?: string

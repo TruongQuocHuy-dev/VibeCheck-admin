@@ -4,6 +4,7 @@ import { ProtectedRoute } from '../shared/components/ProtectedRoute'
 import { LoginPage } from '../features/auth/pages/LoginPage'
 import { DashboardPage } from '../features/dashboard/pages/DashboardPage'
 import { UserListPage } from '../features/user/pages/UserListPage'
+import { AdminManagementPage } from '../features/admin'
 import { VibeModerationPage } from '../features/vibe'
 import { StoryModerationPage } from '../features/story'
 import { BlacklistPage } from '../features/moderation'
@@ -20,7 +21,7 @@ export const router = createBrowserRouter([
     element: <LoginPage />,
   },
   {
-    element: <ProtectedRoute allowedRoles={['admin', 'mod']} />,
+    element: <ProtectedRoute allowedRoles={['admin']} />,
     children: [
       {
         path: '/admin',
@@ -33,6 +34,15 @@ export const router = createBrowserRouter([
           {
             path: 'users',
             element: <UserListPage />,
+          },
+          {
+            element: <ProtectedRoute allowedRoles={['admin']} redirectTo="/admin/users" />,
+            children: [
+              {
+                path: 'admins',
+                element: <AdminManagementPage />,
+              },
+            ],
           },
           {
             path: 'vibes',
