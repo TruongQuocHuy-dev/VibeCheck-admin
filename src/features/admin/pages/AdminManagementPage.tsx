@@ -1,13 +1,10 @@
 import { useState, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../../shared/hooks/useAuth';
-import { AdminTable } from '../components/AdminTable';
-import { RoleAssignmentDialog } from '../components/RoleAssignmentDialog';
-import { DeleteAdminDialog } from '../components/DeleteAdminDialog';
-import { useAdmins } from '../hooks/useAdmins';
-import { useUpdateAdminRole } from '../hooks/useUpdateAdminRole';
+import { AdminTable, RoleAssignmentDialog, DeleteAdminDialog, CreateAdminDialog } from '../components';
+import { useAdmins, useUpdateAdminRole, useCreateAdmin } from '../hooks';
 import { deleteAdmin } from '../services';
-import type { Admin } from '../types';
+import type { Admin, CreateAdminData } from '../types';
 import { Button } from '../../../shared/ui/Button';
 
 export function AdminManagementPage() {
@@ -20,9 +17,11 @@ export function AdminManagementPage() {
   
   const { data, isLoading, refetch } = useAdmins({ page, limit, search });
   const updateRoleMutation = useUpdateAdminRole();
+  const createAdminMutation = useCreateAdmin();
   
   const [editingAdmin, setEditingAdmin] = useState<Admin | null>(null);
   const [deletingAdmin, setDeletingAdmin] = useState<Admin | null>(null);
+  const [isCreating, setIsCreating] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -44,6 +43,16 @@ export function AdminManagementPage() {
     if (!editingAdmin) return;
     await updateRoleMutation.mutateAsync({ adminId: editingAdmin._id, role });
     setEditingAdmin(null);
+  };
+
+  const handleConfirmCreate = async (adminData: CreateAdminData) => {
+    try {
+      await createAdminMutation.mutateAsync(adminData);
+      setIsCreating(false);
+      await refetch();
+    } catch (e) {
+      console.error('Create failed', e);
+    }
   };
 
   const handleConfirmDelete = async (transferToAdminId?: string) => {
@@ -87,7 +96,7 @@ export function AdminManagementPage() {
               className="w-full rounded-2xl border border-background-muted bg-background-card/50 pl-10 pr-4 py-2 text-sm text-text-primary outline-none focus:border-primary transition"
             />
           </div>
-          <Button variant="primary" className="shrink-0" onClick={() => {/* Open Create Admin Modal */}}>
+          <Button variant="primary" className="shrink-0" onClick={() => setIsCreating(true)}>
             <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
             </svg>
@@ -102,6 +111,13 @@ export function AdminManagementPage() {
         currentUserId={user?._id}
         onEditRole={handleEditRole}
         onDeleteAdmin={handleDeleteClick}
+      />
+
+      <CreateAdminDialog
+        isOpen={isCreating}
+        onClose={() => setIsCreating(false)}
+        onConfirm={handleConfirmCreate}
+        isSubmitting={createAdminMutation.isPending}
       />
 
       <RoleAssignmentDialog
