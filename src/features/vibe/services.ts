@@ -1,23 +1,32 @@
 import { api } from '../../shared/lib/api';
 import type { VibeQueryParams, VibeResponse } from './types';
 
-// TODO: Kiểm tra nếu backend dùng /admin/vibes thay vì /vibes
 export const fetchVibes = async (params: VibeQueryParams): Promise<VibeResponse['data']> => {
-  const { data } = await api.get<VibeResponse>('/vibes', { params });
+  const { data } = await api.get<VibeResponse>('/admin/vibes', { params });
   return data.data;
 };
 
 export const hideVibe = async (vibeId: string) => {
-  const { data } = await api.patch(`/vibes/${vibeId}`, { status: 'hidden' });
+  const { data } = await api.patch(`/admin/vibes/${vibeId}/hide`);
+  return data;
+};
+
+export const unhideVibe = async (vibeId: string) => {
+  const { data } = await api.patch(`/admin/vibes/${vibeId}/unhide`);
   return data;
 };
 
 export const deleteVibe = async (vibeId: string) => {
-  const { data } = await api.delete(`/vibes/${vibeId}`);
+  const { data } = await api.delete(`/admin/vibes/${vibeId}`);
   return data;
 };
 
 export const fetchVibeReports = async (vibeId: string) => {
-  const { data } = await api.get(`/vibes/${vibeId}/reports`);
-  return data.data;
+  const { data } = await api.get(`/admin/vibes/${vibeId}`);
+  return data.data?.reports || [];
+};
+
+export const bulkActionVibes = async (vibeIds: string[], action: 'hide' | 'delete') => {
+  const { data } = await api.post(`/admin/vibes/bulk-action`, { vibeIds, action });
+  return data;
 };

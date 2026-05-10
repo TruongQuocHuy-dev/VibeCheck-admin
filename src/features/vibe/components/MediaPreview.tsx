@@ -21,19 +21,28 @@ export function MediaPreview({ vibe, onClose }: MediaPreviewProps) {
 
       <div className="relative flex max-h-[90vh] max-w-[90vw] flex-col overflow-hidden rounded-3xl border border-[#262626] bg-[#0d0d0d] shadow-2xl">
         <div className="flex-1 overflow-hidden bg-black flex items-center justify-center min-h-[300px]">
-          {media.type === 'image' ? (
-            <img 
-              src={media.url} 
-              className="max-h-full max-w-full object-contain"
-              alt=""
-            />
+          {media ? (
+            media.type === 'image' ? (
+              <img 
+                src={media.url} 
+                className="max-h-full max-w-full object-contain"
+                alt=""
+              />
+            ) : (
+              <video 
+                src={media.url} 
+                controls 
+                autoPlay 
+                className="max-h-full max-w-full"
+              />
+            )
           ) : (
-            <video 
-              src={media.url} 
-              controls 
-              autoPlay 
-              className="max-h-full max-w-full"
-            />
+            <div className="flex flex-col items-center gap-2 text-text-muted">
+              <svg className="h-12 w-12 opacity-20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              <p className="text-sm">Không có file đính kèm</p>
+            </div>
           )}
         </div>
 
@@ -55,7 +64,7 @@ export function MediaPreview({ vibe, onClose }: MediaPreviewProps) {
               <div className="space-y-3 max-h-[150px] overflow-y-auto custom-scrollbar">
                 {vibe.reports?.map((report) => (
                   <div key={report._id} className="text-xs">
-                    <span className="font-semibold text-text-primary">@{report.user.displayName}: </span>
+                    <span className="font-semibold text-text-primary">@{report.user?.displayName || 'Unknown'}: </span>
                     <span className="text-text-secondary">{report.reason}</span>
                   </div>
                 ))}
