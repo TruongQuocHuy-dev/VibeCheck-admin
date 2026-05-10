@@ -25,4 +25,5 @@ export interface CMSPage {
   metadata: PageMetadata;
   lastUpdated: string;
   publishedAt?: string;
+  changeSummary?: string;
 }

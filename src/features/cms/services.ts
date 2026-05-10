@@ -33,10 +33,20 @@ export const savePage = async (page: Partial<CMSPage>): Promise<CMSPage> => {
   }
 };
 
+export const deletePage = async (id: string): Promise<void> => {
+  await api.delete(`/admin/cms/pages/${id}`);
+};
+
 export const fetchPageVersions = async (pageId: string): Promise<PageVersion[]> => {
-  // Versioning is not yet fully implemented on backend, returning empty for now
-  // In a real app: const { data } = await api.get(`/admin/cms/pages/${pageId}/versions`);
-  return [];
+  const { data } = await api.get(`/admin/cms/pages/${pageId}/versions`);
+  return data.data.versions.map((v: any) => ({
+    id: v._id,
+    versionNumber: v.versionNumber,
+    content: v.content,
+    authorName: v.authorId?.fullName || v.authorId?.displayName || 'Unknown',
+    createdAt: v.createdAt,
+    changeSummary: v.changeSummary,
+  }));
 };
 
 export const uploadCmsImage = async (file: File): Promise<{ url: string }> => {

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { usePages } from '../hooks/usePages';
 import { usePageEditor } from '../hooks/usePageEditor';
+import { usePageVersions } from '../hooks/usePageVersions';
 import { PageList } from '../components/PageList';
 import { WysiwygEditor } from '../components/WysiwygEditor';
 import { SlugInput } from '../components/SlugInput';
@@ -14,7 +15,7 @@ import { Skeleton } from '../../../shared/ui/Skeleton';
 import { Plus, ChevronLeft, Save, Send, Eye, Layout, Info } from 'lucide-react';
 
 export const CMSPages: React.FC = () => {
-  const { pages, isLoading } = usePages();
+  const { pages, isLoading, deletePage } = usePages();
   const [searchParams, setSearchParams] = useSearchParams();
   const [showPreview, setShowPreview] = useState(false);
 
@@ -25,6 +26,9 @@ export const CMSPages: React.FC = () => {
 
   // Editor hook
   const editor = usePageEditor(editingPage);
+
+  // Versions hook
+  const { data: versions = [], isLoading: isLoadingVersions } = usePageVersions(editingPage?.id);
 
   const handleEdit = (page: CMSPage) => {
     setSearchParams({ v: 'edit', slug: page.slug });
@@ -48,6 +52,19 @@ export const CMSPages: React.FC = () => {
   const handleRestore = (version: PageVersion) => {
     if (window.confirm(`Khôi phục về phiên bản #${version.versionNumber}?`)) {
       editor.updateField('content', version.content);
+      editor.updateField('changeSummary', `Khôi phục từ phiên bản #${version.versionNumber}`);
+      setSearchParams({ v: 'edit', slug: slug || '' });
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    if (window.confirm('Bạn có chắc muốn xóa trang này? Hành động này không thể hoàn tác.')) {
+      try {
+        await deletePage(id);
+      } catch (e) {
+        console.error('Delete failed:', e);
+        alert('Xóa thất bại');
+      }
     }
   };
 
@@ -75,7 +92,7 @@ export const CMSPages: React.FC = () => {
             onEdit={handleEdit}
             onPreview={(p) => { setSearchParams({ v: 'list', slug: p.slug }); setShowPreview(true); }}
             onViewHistory={(p) => { setSearchParams({ v: 'history', slug: p.slug }); }}
-            onDelete={(id) => console.log('Delete', id)}
+            onDelete={handleDelete}
           />
         )}
 
@@ -190,11 +207,17 @@ export const CMSPages: React.FC = () => {
               />
             </>
           ) : (
-            <VersionHistory 
-              versions={[]} // TODO: Fetch real versions
-              currentContent={editor.page.content || ''}
-              onRestore={handleRestore}
-            />
+            isLoadingVersions ? (
+              <div className="space-y-4">
+                {[1, 2, 3].map(i => <Skeleton key={i} className="h-20 w-full rounded-xl" />)}
+              </div>
+            ) : (
+              <VersionHistory 
+                versions={versions}
+                currentContent={editor.page.content || ''}
+                onRestore={handleRestore}
+              />
+            )
           )}
         </div>
 
@@ -234,6 +257,19 @@ export const CMSPages: React.FC = () => {
                   value={editor.page.metadata?.tags?.join(', ')}
                   onChange={(e) => editor.updateField('metadata', { ...editor.page.metadata, tags: e.target.value.split(',').map(s => s.trim()) })}
                   placeholder="legal, privacy, user..."
+                  className="w-full bg-background-muted border border-background-muted rounded-xl px-4 py-3 text-xs text-text-primary focus:ring-2 focus:ring-primary/50 transition-all"
+                />
+              </div>
+
+              <div className="pt-4 border-t border-background-muted space-y-2">
+                <label className="text-xs font-bold text-text-muted uppercase tracking-wider block">
+                  Ghi chú thay đổi (Tùy chọn)
+                </label>
+                <input
+                  type="text"
+                  value={editor.page.changeSummary || ''}
+                  onChange={(e) => editor.updateField('changeSummary', e.target.value)}
+                  placeholder="Ví dụ: Cập nhật điều khoản bảo mật..."
                   className="w-full bg-background-muted border border-background-muted rounded-xl px-4 py-3 text-xs text-text-primary focus:ring-2 focus:ring-primary/50 transition-all"
                 />
               </div>

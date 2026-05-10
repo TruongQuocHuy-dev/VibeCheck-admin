@@ -17,6 +17,24 @@ export const usePageEditor = (initialPage?: CMSPage) => {
   const [isDirty, setIsDirty] = useState(false);
   const [lastSaved, setLastSaved] = useState<string | null>(null);
 
+  useEffect(() => {
+    if (initialPage) {
+      setPage(initialPage);
+      setIsDirty(false);
+    } else {
+      // Reset to default for create mode
+      setPage({
+        title: '',
+        slug: '',
+        content: '',
+        language: 'vi',
+        status: 'draft',
+        metadata: { description: '', tags: [] }
+      });
+      setIsDirty(false);
+    }
+  }, [initialPage]);
+
   const updateField = (field: keyof CMSPage, value: any) => {
     setPage(prev => {
       const newPage = { ...prev, [field]: value };

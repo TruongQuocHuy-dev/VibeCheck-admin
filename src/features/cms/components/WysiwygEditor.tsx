@@ -30,6 +30,14 @@ export const WysiwygEditor: React.FC<WysiwygEditorProps> = ({ content, onChange 
     },
   });
 
+  React.useEffect(() => {
+    if (editor && content !== editor.getHTML()) {
+      // Small trick: check if content is empty string and editor has just a placeholder paragraph
+      if (content === '' && editor.getHTML() === '<p></p>') return;
+      editor.commands.setContent(content);
+    }
+  }, [content, editor]);
+
   const addImage = useCallback(() => {
     const url = window.prompt('Nhập URL hình ảnh:');
     if (url) {
