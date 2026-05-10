@@ -1,4 +1,4 @@
-export type VibeStatus = 'active' | 'hidden' | 'deleted';
+export type VibeStatus = 'active' | 'hidden' | 'deleted' | 'pending';
 
 export interface VibeReport {
   _id: string;

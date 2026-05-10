@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { usePages } from './usePages';
 import type { CMSPage } from '../types';
 import { slugify } from '../utils';

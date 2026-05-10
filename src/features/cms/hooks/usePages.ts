@@ -1,6 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { fetchPages, savePage, deletePage } from '../services';
-import type { CMSPage } from '../types';
 
 export const usePages = () => {
   const queryClient = useQueryClient();

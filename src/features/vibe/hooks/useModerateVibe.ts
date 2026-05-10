@@ -1,7 +1,27 @@
 import { useEffect } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { hideVibe, unhideVibe, deleteVibe, bulkActionVibes } from '../services';
+import { hideVibe, unhideVibe, deleteVibe, bulkActionVibes, approveVibe, rejectVibe } from '../services';
 import { useSocket } from '../../notification/hooks/useSocket';
+
+export const useApproveVibe = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => approveVibe(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['vibes'] });
+    },
+  });
+};
+
+export const useRejectVibe = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, reason }: { id: string; reason?: string }) => rejectVibe(id, reason),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['vibes'] });
+    },
+  });
+};
 
 export const useModerateVibe = () => {
   const queryClient = useQueryClient();
@@ -18,12 +38,16 @@ export const useModerateVibe = () => {
     socket.on('vibe:unhidden', handleVibeUpdate);
     socket.on('vibe:deleted', handleVibeUpdate);
     socket.on('vibe:reported', handleVibeUpdate);
+    socket.on('vibe:approved', handleVibeUpdate);
+    socket.on('vibe:rejected', handleVibeUpdate);
 
     return () => {
       socket.off('vibe:hidden', handleVibeUpdate);
       socket.off('vibe:unhidden', handleVibeUpdate);
       socket.off('vibe:deleted', handleVibeUpdate);
       socket.off('vibe:reported', handleVibeUpdate);
+      socket.off('vibe:approved', handleVibeUpdate);
+      socket.off('vibe:rejected', handleVibeUpdate);
     };
   }, [socket, queryClient]);
 

@@ -16,6 +16,16 @@ export const unhideVibe = async (vibeId: string) => {
   return data;
 };
 
+export const approveVibe = async (vibeId: string) => {
+  const { data } = await api.patch(`/admin/vibes/${vibeId}/approve`);
+  return data;
+};
+
+export const rejectVibe = async (vibeId: string, reason?: string, notifyUser?: boolean) => {
+  const { data } = await api.patch(`/admin/vibes/${vibeId}/reject`, { reason, notifyUser });
+  return data;
+};
+
 export const deleteVibe = async (vibeId: string) => {
   const { data } = await api.delete(`/admin/vibes/${vibeId}`);
   return data;
