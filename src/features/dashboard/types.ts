@@ -3,6 +3,10 @@ export type DashboardStatKey =
   | 'activeToday'
   | 'reportedVibes'
   | 'pendingReports'
+  | 'activeStories'
+  | 'reportedStories'
+  | 'expiringStories'
+  | 'storyViews'
 
 export type RecentActivityKind = 'user' | 'vibe' | 'report'
 

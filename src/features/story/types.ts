@@ -1,3 +1,5 @@
+export type StoryStatus = 'active' | 'hidden' | 'deleted' | 'expired' | 'pending';
+
 export interface Story {
   _id: string;
   user: {
@@ -5,23 +7,35 @@ export interface Story {
     fullName?: string;
     displayName?: string;
     avatar?: string;
+    email?: string;
   };
   mediaUrl: string;
-  mediaType: 'image' | 'video';
+  mediaType: 'image' | 'video' | 'text';
+  caption: string;
+  status: StoryStatus;
+  reportCount: number;
   reports: {
     _id: string;
-    user: string;
+    user: {
+      _id: string;
+      displayName?: string;
+      avatar?: string;
+    };
     reason: string;
     createdAt: string;
   }[];
-  isFeatured?: boolean;
   createdAt: string;
   expiresAt: string;
+  remainingTime?: string;
+  isExpiringSoon?: boolean;
+  location?: any;
 }
 
 export interface StoryQueryParams {
-  reported?: boolean;
-  featured?: boolean;
+  page?: number;
+  limit?: number;
+  status?: StoryStatus | 'all' | 'reported' | 'expiring-soon';
+  sortBy?: string;
 }
 
 export interface StoryResponse {
@@ -29,5 +43,16 @@ export interface StoryResponse {
   message: string;
   data: {
     stories: Story[];
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
   };
+}
+
+export interface StoryStats {
+  active: number;
+  reported: number;
+  expiringSoon: number;
+  totalViews: number;
 }

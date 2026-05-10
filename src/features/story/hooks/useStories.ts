@@ -1,11 +1,11 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { fetchStories, deleteStory } from '../services';
+import { fetchAdminStories, deleteStory } from '../services';
 import type { StoryQueryParams } from '../types';
 
 export const useStories = (params: StoryQueryParams) => {
   return useQuery({
     queryKey: ['stories', params],
-    queryFn: () => fetchStories(params),
+    queryFn: () => fetchAdminStories(params),
     staleTime: 30 * 1000,
   });
 };
