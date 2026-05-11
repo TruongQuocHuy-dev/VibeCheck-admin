@@ -3,13 +3,13 @@ import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { api } from '../lib/api'
 
 export type AuthUser = {
-  _id: string
-  email: string
-  role: 'user' | 'admin'
-  status: 'active' | 'banned'
+  id: string
+  email?: string
+  phone?: string
+  role: 'user' | 'admin' | 'mod'
   fullName?: string
   displayName?: string
-  name?: string
+  avatar?: string
 }
 
 const AUTH_TOKEN_KEY = 'vibe_token'
@@ -17,34 +17,47 @@ const AUTH_TOKEN_KEY = 'vibe_token'
 export function useAuth() {
   const queryClient = useQueryClient()
 
-  const { data: user, isLoading: loading, refetch } = useQuery({
+  // Kiểm tra token tồn tại trong localStorage
+  const hasToken = !!localStorage.getItem(AUTH_TOKEN_KEY)
+
+  const { 
+    data: user, 
+    isLoading, 
+    isFetching,
+    refetch 
+  } = useQuery<AuthUser | null>({
     queryKey: ['auth-user'],
     queryFn: async () => {
-      const token = localStorage.getItem(AUTH_TOKEN_KEY)
-      if (!token) return null
-
       try {
         const { data } = await api.get('/users/profile')
-        return data.data?.user ?? data.user ?? data
+        // Thích ứng với các format response khác nhau từ BE
+        const userData = data.data?.user ?? data.user ?? data
+        return userData as AuthUser
       } catch (error) {
-        localStorage.removeItem(AUTH_TOKEN_KEY)
+        // Interceptor đã xử lý xóa token, ở đây chỉ trả về null
         return null
       }
     },
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    // Chỉ fetch khi có token trong localStorage
+    enabled: hasToken,
+    staleTime: 10 * 60 * 1000, // 10 minutes
+    gcTime: 15 * 60 * 1000,
     retry: false,
   })
 
   const logout = useCallback(() => {
     localStorage.removeItem(AUTH_TOKEN_KEY)
-    queryClient.setQueryData(['auth-user'], null)
+    // Clear toàn bộ cache để bảo mật
+    queryClient.clear()
+    // Chuyển hướng cứng để reset toàn bộ state của app
     window.location.href = '/login'
   }, [queryClient])
 
   return {
     user: user || null,
-    loading,
+    isLoading: isLoading || (hasToken && isFetching && !user),
     logout,
     refetch,
+    isAuthenticated: !!user && hasToken,
   }
 }
