@@ -3,11 +3,11 @@ import { useAuth } from '../../shared/hooks/useAuth'
 
 export function ProtectedAdminRoute() {
   const location = useLocation()
-  const { user, loading } = useAuth()
+  const { user, isLoading } = useAuth()
 
-  console.log('ProtectedAdminRoute user=', user, 'loading=', loading)
+  console.log('ProtectedAdminRoute user=', user, 'loading=', isLoading)
 
-  if (loading) return null
+  if (isLoading) return null
 
   if (!user || (user.role !== 'admin' && user.role !== 'mod')) {
     return (
