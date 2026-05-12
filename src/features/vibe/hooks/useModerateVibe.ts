@@ -1,89 +1,37 @@
-import { useEffect } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { hideVibe, unhideVibe, deleteVibe, bulkActionVibes, approveVibe, rejectVibe } from '../services';
-import { useSocket } from '../../notification/hooks/useSocket';
+import { moderateVibe, deleteVibe } from '../services';
+import { toast } from 'react-hot-toast';
 
-export const useApproveVibe = () => {
+export const useModerateVibeAction = () => {
   const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: (id: string) => approveVibe(id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['vibes'] });
+
+  const moderateMutation = useMutation({
+    mutationFn: ({ id, status }: { id: string; status: 'active' | 'hidden' }) => 
+      moderateVibe(id, status),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['admin-vibes'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-vibes-stats'] });
+      toast.success(`Đã ${variables.status === 'active' ? 'duyệt' : 'ẩn'} vibe thành công`);
     },
-  });
-};
-
-export const useRejectVibe = () => {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: ({ id, reason }: { id: string; reason?: string }) => rejectVibe(id, reason),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['vibes'] });
-    },
-  });
-};
-
-export const useModerateVibe = () => {
-  const queryClient = useQueryClient();
-  const { socket } = useSocket();
-
-  useEffect(() => {
-    if (!socket) return;
-
-    const handleVibeUpdate = () => {
-      queryClient.invalidateQueries({ queryKey: ['vibes'] });
-    };
-
-    socket.on('vibe:hidden', handleVibeUpdate);
-    socket.on('vibe:unhidden', handleVibeUpdate);
-    socket.on('vibe:deleted', handleVibeUpdate);
-    socket.on('vibe:reported', handleVibeUpdate);
-    socket.on('vibe:approved', handleVibeUpdate);
-    socket.on('vibe:rejected', handleVibeUpdate);
-
-    return () => {
-      socket.off('vibe:hidden', handleVibeUpdate);
-      socket.off('vibe:unhidden', handleVibeUpdate);
-      socket.off('vibe:deleted', handleVibeUpdate);
-      socket.off('vibe:reported', handleVibeUpdate);
-      socket.off('vibe:approved', handleVibeUpdate);
-      socket.off('vibe:rejected', handleVibeUpdate);
-    };
-  }, [socket, queryClient]);
-
-  const hideMutation = useMutation({
-    mutationFn: (id: string) => hideVibe(id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['vibes'] });
-    },
-  });
-
-  const unhideMutation = useMutation({
-    mutationFn: (id: string) => unhideVibe(id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['vibes'] });
-    },
+    onError: () => {
+      toast.error('Có lỗi xảy ra khi cập nhật vibe');
+    }
   });
 
   const deleteMutation = useMutation({
     mutationFn: (id: string) => deleteVibe(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['vibes'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-vibes'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-vibes-stats'] });
+      toast.success('Đã xóa vibe vĩnh viễn');
     },
-  });
-
-  const bulkMutation = useMutation({
-    mutationFn: ({ ids, action }: { ids: string[]; action: 'hide' | 'delete' }) =>
-      bulkActionVibes(ids, action),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['vibes'] });
-    },
+    onError: () => {
+      toast.error('Có lỗi xảy ra khi xóa vibe');
+    }
   });
 
   return {
-    hideVibe: hideMutation,
-    unhideVibe: unhideMutation,
+    moderateVibe: moderateMutation,
     deleteVibe: deleteMutation,
-    bulkActionVibes: bulkMutation,
   };
 };

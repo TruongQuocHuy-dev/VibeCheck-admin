@@ -1,33 +1,19 @@
 export type VibeStatus = 'active' | 'hidden' | 'deleted' | 'pending';
 
-export interface VibeReport {
-  _id: string;
-  user: {
-    _id: string;
-    fullName?: string;
-    displayName?: string;
-    avatar?: string;
-  };
-  reason: string;
-  createdAt: string;
-}
-
 export interface Vibe {
   _id: string;
+  photos: string[];
+  status: VibeStatus;
+  createdAt: string;
   user: {
     _id: string;
-    fullName?: string;
-    displayName?: string;
+    fullName: string;
     avatar?: string;
+    gender?: string;
+    birthYear?: number;
+    bio?: string;
+    vibeTags?: string[];
   };
-  caption: string;
-  media: {
-    type: 'image' | 'video';
-    url: string;
-  }[];
-  status: VibeStatus;
-  reports: VibeReport[];
-  createdAt: string;
 }
 
 export interface VibeQueryParams {
@@ -43,8 +29,13 @@ export interface VibeResponse {
   data: {
     vibes: Vibe[];
     total: number;
-    page: number;
-    limit: number;
-    totalPages: number;
   };
+}
+
+export interface VibeStats {
+  totalVibes: number;
+  activeVibes: number;
+  hiddenVibes: number;
+  pendingVibes: number;
+  reportedVibes: number;
 }

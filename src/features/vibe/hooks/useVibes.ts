@@ -1,12 +1,18 @@
-import { useQuery, keepPreviousData } from '@tanstack/react-query';
-import { fetchVibes } from '../services';
-import type { VibeQueryParams } from '../types';
+import { useQuery } from '@tanstack/react-query';
+import { fetchVibesModeration, fetchVibeStats } from '../services';
 
-export const useVibes = (params: VibeQueryParams) => {
+export const useVibesModeration = (status: string = 'pending') => {
   return useQuery({
-    queryKey: ['vibes', params],
-    queryFn: () => fetchVibes(params),
-    placeholderData: keepPreviousData,
-    staleTime: 60 * 1000,
+    queryKey: ['admin-vibes', status],
+    queryFn: () => fetchVibesModeration(status),
+    staleTime: 30000,
+  });
+};
+
+export const useVibeStats = () => {
+  return useQuery({
+    queryKey: ['admin-vibes-stats'],
+    queryFn: fetchVibeStats,
+    staleTime: 60000,
   });
 };
