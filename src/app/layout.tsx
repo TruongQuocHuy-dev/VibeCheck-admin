@@ -119,11 +119,11 @@ export function AppLayout() {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
 
   return (
-    <div className="flex min-h-screen bg-[#0d0d0d] text-[#ececec]">
+    <div className="flex h-screen overflow-hidden bg-[#0d0d0d] text-[#ececec]">
       {/* Sidebar */}
       <aside 
         className={[
-          'fixed inset-y-0 z-50 flex flex-col bg-[#000000] border-r border-[#262626] transition-all duration-300 md:relative',
+          'fixed inset-y-0 z-50 flex flex-col bg-[#000000] border-r border-[#262626] transition-all duration-300 md:sticky md:top-0 md:h-screen',
           isSidebarCollapsed ? 'w-[70px]' : 'w-[260px]'
         ].join(' ')}
       >
