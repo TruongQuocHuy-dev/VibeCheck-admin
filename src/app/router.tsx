@@ -14,6 +14,7 @@ import { SettingsPage } from '../features/settings'
 import { CMSPages } from '../features/cms'
 import { NotificationHistoryPage } from '../features/notification'
 import { ProfilePage } from '../features/profile'
+import VibeTagPage from '../features/vibe-tag/pages/VibeTagPage'
 
 export const router = createBrowserRouter([
   {
@@ -79,6 +80,10 @@ export const router = createBrowserRouter([
           {
             path: 'profile',
             element: <ProfilePage />,
+          },
+          {
+            path: 'vibe-tags',
+            element: <VibeTagPage />,
           },
         ],
       },

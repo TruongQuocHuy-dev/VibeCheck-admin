@@ -71,6 +71,24 @@ const mainItems = [
       </svg>
     ),
   },
+  {
+    label: 'Quản lý Blacklist',
+    to: '/admin/blacklist',
+    icon: (
+      <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+      </svg>
+    ),
+  },
+  {
+    label: 'Quản lý VibeTag',
+    to: '/admin/vibe-tags',
+    icon: (
+      <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+      </svg>
+    ),
+  },
 ]
 
 const moderationItems = [
@@ -89,15 +107,6 @@ const moderationItems = [
     icon: (
       <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 2m6-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-      </svg>
-    ),
-  },
-  {
-    label: 'Quản lý Blacklist',
-    to: '/admin/blacklist',
-    icon: (
-      <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
       </svg>
     ),
   },
@@ -185,7 +194,7 @@ export function AppLayout() {
 
               <div className={[
                 'mt-1 space-y-1 transition-all duration-300 overflow-hidden',
-                !isSidebarCollapsed && !isModerationOpen ? 'max-h-0 opacity-0' : 'max-h-40 opacity-100'
+                !isSidebarCollapsed && !isModerationOpen ? 'max-h-0 opacity-0' : 'max-h-[500px] opacity-100'
               ].join(' ')}>
                 {moderationItems.map((item) => (
                   <SidebarItem
