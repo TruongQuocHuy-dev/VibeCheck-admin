@@ -40,7 +40,8 @@ export function VibeModerationPage() {
   }, [currentIndex]);
 
   const currentVibe = vibes?.[currentIndex];
-  const hasMultiplePhotos = (currentVibe?.photos?.length || 0) > 1;
+  const allPhotos = currentVibe ? [currentVibe.user?.avatar, ...(currentVibe.photos || [])].filter(Boolean) : [];
+  const hasMultiplePhotos = allPhotos.length > 1;
 
   const handleNext = useCallback(() => {
     if (vibes && currentIndex < vibes.length - 1) {
@@ -56,7 +57,7 @@ export function VibeModerationPage() {
 
   const handleNextPhoto = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (currentVibe?.photos && photoIndex < currentVibe.photos.length - 1) {
+    if (allPhotos.length > 0 && photoIndex < allPhotos.length - 1) {
       setPhotoIndex(prev => prev + 1);
     }
   };
@@ -194,9 +195,9 @@ export function VibeModerationPage() {
 
               {/* Card Container */}
               <div className="relative w-full h-full rounded-[2.5rem] overflow-hidden bg-[#171717] border border-white/10 shadow-2xl group/card">
-                {currentVibe?.photos?.[photoIndex] ? (
+                {allPhotos[photoIndex] ? (
                   <img
-                    src={currentVibe.photos[photoIndex]}
+                    src={allPhotos[photoIndex]}
                     alt={`Vibe photo ${photoIndex + 1}`}
                     className="w-full h-full object-cover"
                   />
@@ -210,7 +211,7 @@ export function VibeModerationPage() {
                 {hasMultiplePhotos && (
                   <>
                     <div className="absolute top-4 left-0 right-0 flex justify-center gap-1.5 z-20">
-                      {currentVibe.photos.map((_, i) => (
+                      {allPhotos.map((_, i) => (
                         <div 
                           key={i} 
                           className={`h-1 rounded-full transition-all ${
@@ -307,7 +308,7 @@ export function VibeModerationPage() {
                       </div>
                       {hasMultiplePhotos && (
                         <div className="px-2 py-0.5 rounded-md bg-white/10 text-white/60">
-                           {photoIndex + 1} / {currentVibe.photos.length} 📸
+                           {photoIndex + 1} / {allPhotos.length} 📸
                         </div>
                       )}
                     </div>

@@ -8,6 +8,7 @@ export interface Vibe {
   user: {
     _id: string;
     fullName: string;
+    displayName?: string;
     avatar?: string;
     gender?: string;
     birthYear?: number;

@@ -10,7 +10,6 @@ interface VibeCardViewerProps {
 export function VibeCardViewer({ vibes, onApprove, onReject }: VibeCardViewerProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [expandedCaption, setExpandedCaption] = useState(false);
-  const [showReports, setShowReports] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
 
   // If vibes array changes and current index is out of bounds, reset
@@ -27,7 +26,6 @@ export function VibeCardViewer({ vibes, onApprove, onReject }: VibeCardViewerPro
     if (currentIndex < vibes.length - 1) {
       setCurrentIndex(prev => prev + 1);
       setExpandedCaption(false);
-      setShowReports(false);
     }
   }, [currentIndex, vibes.length]);
 
@@ -35,7 +33,6 @@ export function VibeCardViewer({ vibes, onApprove, onReject }: VibeCardViewerPro
     if (currentIndex > 0) {
       setCurrentIndex(prev => prev - 1);
       setExpandedCaption(false);
-      setShowReports(false);
     }
   }, [currentIndex]);
 
@@ -94,9 +91,8 @@ export function VibeCardViewer({ vibes, onApprove, onReject }: VibeCardViewerPro
     );
   }
 
-  const media = currentVibe.media?.[0];
-  const isVideo = media?.type === 'video';
-  const hasReports = (currentVibe.reports?.length || 0) > 0;
+  const allPhotos = [currentVibe.user?.avatar, ...(currentVibe.photos || [])].filter(Boolean);
+  const mainPhoto = allPhotos[0];
 
   return (
     <div className="flex flex-col items-center w-full max-w-2xl mx-auto h-[calc(100vh-140px)] min-h-[600px]">
@@ -113,23 +109,12 @@ export function VibeCardViewer({ vibes, onApprove, onReject }: VibeCardViewerPro
       >
         {/* Media Background */}
         <div className="absolute inset-0 flex items-center justify-center bg-[#111]">
-          {media ? (
-             isVideo ? (
-               <video 
-                 src={media.url} 
-                 className="h-full w-full object-cover"
-                 autoPlay 
-                 loop 
-                 muted 
-                 playsInline
-               />
-             ) : (
-               <img 
-                 src={media.url} 
-                 className="h-full w-full object-cover" 
-                 alt="Vibe content" 
-               />
-             )
+          {mainPhoto ? (
+            <img 
+              src={mainPhoto} 
+              className="h-full w-full object-cover" 
+              alt="Vibe content" 
+            />
           ) : (
              <div className="flex flex-col items-center text-text-muted">
                <span className="text-4xl mb-2">📸</span>
@@ -142,18 +127,7 @@ export function VibeCardViewer({ vibes, onApprove, onReject }: VibeCardViewerPro
         <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-black/80 to-transparent pointer-events-none" />
         <div className="absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-black/90 via-black/50 to-transparent pointer-events-none" />
 
-        {/* Reports Badge */}
-        {hasReports && (
-          <div className="absolute top-4 right-4 z-10">
-            <button 
-              onClick={() => setShowReports(!showReports)}
-              className="flex items-center gap-1.5 rounded-full bg-status-banned/90 px-3 py-1.5 text-xs font-bold text-white shadow-lg backdrop-blur-md transition-transform hover:scale-105"
-            >
-              <span className="h-2 w-2 rounded-full bg-white animate-pulse" />
-              {currentVibe.reports.length} Báo cáo
-            </button>
-          </div>
-        )}
+
 
         {/* User Info & Caption (Bottom) */}
         <div className="absolute bottom-24 left-0 right-0 p-6 z-10">
@@ -178,10 +152,28 @@ export function VibeCardViewer({ vibes, onApprove, onReject }: VibeCardViewerPro
             onClick={() => setExpandedCaption(!expandedCaption)}
           >
             <p className={`text-sm text-white/90 leading-relaxed ${expandedCaption ? '' : 'line-clamp-3'}`}>
-              {currentVibe.caption || 'Không có mô tả'}
+              {currentVibe.user?.bio || 'Không có mô tả (Bio trống)'}
             </p>
-            {!expandedCaption && currentVibe.caption && currentVibe.caption.length > 100 && (
+            {!expandedCaption && currentVibe.user?.bio && currentVibe.user.bio.length > 100 && (
               <span className="text-xs font-semibold text-white/50 mt-1 block">Xem thêm...</span>
+            )}
+            
+            {/* Vibe Tags */}
+            {currentVibe.user?.vibeTags && currentVibe.user.vibeTags.length > 0 && (
+              <div className="mt-3 flex flex-wrap gap-2">
+                {currentVibe.user.vibeTags.map(tagId => (
+                  <span key={tagId} className="rounded-full bg-white/20 px-2 py-1 text-xs text-white backdrop-blur-md">
+                    #{tagId.substring(0, 6)}
+                  </span>
+                ))}
+              </div>
+            )}
+            
+            {/* Photos count */}
+            {allPhotos.length > 1 && (
+              <p className="mt-2 text-xs text-white/60 text-right">
+                + {allPhotos.length - 1} ảnh khác
+              </p>
             )}
           </div>
         </div>
@@ -210,40 +202,7 @@ export function VibeCardViewer({ vibes, onApprove, onReject }: VibeCardViewerPro
           </button>
         </div>
 
-        {/* Reports Panel Overlay */}
-        {showReports && hasReports && (
-          <div className="absolute inset-0 z-30 bg-black/95 p-6 backdrop-blur-xl flex flex-col animate-in fade-in zoom-in-95 duration-200">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-bold text-status-banned flex items-center gap-2">
-                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                </svg>
-                Chi tiết báo cáo
-              </h3>
-              <button 
-                onClick={() => setShowReports(false)}
-                className="rounded-full bg-white/10 p-2 text-white hover:bg-white/20"
-              >
-                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-            <div className="flex-1 overflow-y-auto custom-scrollbar space-y-4">
-              {currentVibe.reports.map((report) => (
-                <div key={report._id} className="rounded-xl bg-[#1a1a1a] p-4 border border-[#333]">
-                  <div className="flex items-center gap-2 mb-2 text-sm font-semibold text-white">
-                    <div className="h-6 w-6 rounded-full bg-primary/20 flex items-center justify-center text-primary text-xs">
-                      {report.user?.displayName?.charAt(0) || '?'}
-                    </div>
-                    {report.user?.displayName || 'Người dùng ẩn danh'}
-                  </div>
-                  <p className="text-sm text-text-secondary">{report.reason}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
+
       </div>
 
       {/* Navigation Hint */}
