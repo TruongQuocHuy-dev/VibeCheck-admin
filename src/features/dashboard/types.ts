@@ -1,39 +1,54 @@
 export type DashboardStatKey =
   | 'totalUsers'
-  | 'activeToday'
-  | 'reportedVibes'
+  | 'activeNow'
   | 'pendingReports'
-  | 'activeStories'
-  | 'reportedStories'
-  | 'expiringStories'
-  | 'storyViews'
+  | 'pendingContent'
 
-export type RecentActivityKind = 'user' | 'vibe' | 'report'
+export type ActivityAction = 'admin_action' | 'new_user' | 'report'
 
 export type ActivityTone = 'neutral' | 'success' | 'warning' | 'danger' | 'primary'
 
 export type RecentActivityItem = {
   id: string
-  title: string
-  description: string
   timestamp: string
-  kind: RecentActivityKind
-  tone: ActivityTone
+  type: ActivityAction
+  user: string
+  action: string
+  status: 'completed' | 'pending' | 'failed'
+}
+
+export type ChartDataPoint = {
+  name: string
+  [key: string]: string | number
+}
+
+export type SystemHealth = {
+  serverStatus: 'online' | 'offline' | 'degraded'
+  dbConnection: 'connected' | 'disconnected' | 'latency'
+  lastBackup: string
+  activeAdmins: number
 }
 
 export type DashboardStats = {
   totalUsers: number
-  activeToday: number
-  reportedVibes: number
+  totalUsersTrend: number
+  activeNow: number
   pendingReports: number
+  pendingContent: number
   recentActivity: RecentActivityItem[]
+  charts: {
+    userGrowth: ChartDataPoint[]
+    contentStatus: ChartDataPoint[]
+    reportsByType: ChartDataPoint[]
+  }
+  systemHealth: SystemHealth
   lastUpdated: string
 }
 
 export type StatsCardModel = {
   key: DashboardStatKey
   label: string
-  value: number
-  helperText: string
+  value: number | string
+  trend?: number
   tone: ActivityTone
 }
