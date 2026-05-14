@@ -3,7 +3,7 @@ import { TrendingUp, TrendingDown } from 'lucide-react'
 import { Card } from '../../../shared/ui/Card'
 import type { StatsCardModel } from '../types'
 
-type StatsCardProps = StatsCardModel & {
+type StatsCardProps = Omit<StatsCardModel, 'key'> & {
   icon: ReactNode
 }
 

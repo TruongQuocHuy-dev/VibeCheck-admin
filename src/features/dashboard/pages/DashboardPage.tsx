@@ -83,14 +83,14 @@ export function DashboardPage() {
         key: 'pendingReports' as const,
         label: 'Báo cáo chờ',
         value: stats.pendingReports,
-        tone: stats.pendingReports > 0 ? 'danger' : 'neutral' as const,
+        tone: (stats.pendingReports > 0 ? 'danger' : 'neutral') as 'danger' | 'neutral',
         icon: <AlertTriangle size={24} />,
       },
       {
         key: 'pendingContent' as const,
         label: 'Content chờ duyệt',
         value: stats.pendingContent,
-        tone: stats.pendingContent > 0 ? 'warning' : 'neutral' as const,
+        tone: (stats.pendingContent > 0 ? 'warning' : 'neutral') as 'warning' | 'neutral',
         icon: <Clock size={24} />,
       },
     ]
@@ -125,9 +125,9 @@ export function DashboardPage() {
     <div className="space-y-6 animate-in fade-in duration-500">
       {/* 1. Stats Cards */}
       <section className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-        {statsCards.map((card, idx) => (
-          <div key={card.key} className={`animate-in slide-in-from-bottom-4 duration-500 delay-[${idx * 100}ms]`}>
-            <StatsCard {...card} icon={card.icon} />
+        {statsCards.map(({ key, ...cardProps }, idx) => (
+          <div key={key} className={`animate-in slide-in-from-bottom-4 duration-500 delay-[${idx * 100}ms]`}>
+            <StatsCard {...cardProps} />
           </div>
         ))}
       </section>
