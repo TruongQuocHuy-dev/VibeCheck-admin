@@ -19,10 +19,20 @@ export const AnalyticsPage: React.FC = () => {
 
   const handleExportCSV = () => {
     if (!data) return;
-    const exportData = data.charts.growth.map(d => ({
-      'Ngày': d.date,
-      'Người dùng mới': d.users,
-    }));
+    
+    const exportData = [
+      // Header for metrics
+      { 'Chỉ số': 'Người dùng mới', 'Giá trị': data.metrics.newUsers.value, 'Xu hướng': data.metrics.newUsers.trend },
+      { 'Chỉ số': 'DAU', 'Giá trị': data.metrics.dau.value, 'Xu hướng': data.metrics.dau.trend },
+      { 'Chỉ số': 'Báo cáo', 'Giá trị': data.metrics.reports.value, 'Xu hướng': data.metrics.reports.trend },
+      {}, // Empty row separator
+      { 'Ngày': '--- Dữ liệu tăng trưởng ---', 'Người dùng mới': '' },
+      ...data.charts.growth.map(d => ({
+        'Ngày': d.date,
+        'Người dùng mới': d.users,
+      }))
+    ];
+    
     exportCSV(exportData, `vibecheck-analytics-${from}-to-${to}`);
   };
 
