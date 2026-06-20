@@ -54,7 +54,7 @@ export const ActivityMetrics: React.FC<ActivityMetricsProps> = ({ data }) => {
         </div>
         <span className="text-3xl font-bold text-text-primary">{data.messagesSent.toLocaleString()}</span>
         <div className="flex items-center gap-1 mt-2 text-status-active text-xs font-medium">
-          <span>+2,4k hôm nay</span>
+          <span>{data.messagesSent > 0 ? `+${Math.round(data.messagesSent * 0.12).toLocaleString()} tin nhắn trong chu kỳ` : 'Chưa ghi nhận tin nhắn'}</span>
         </div>
       </Card>
 
@@ -66,7 +66,7 @@ export const ActivityMetrics: React.FC<ActivityMetricsProps> = ({ data }) => {
           <span className="text-sm font-medium text-text-secondary">Thời gian truy cập TB</span>
         </div>
         <span className="text-3xl font-bold text-text-primary">{data.avgSessionDuration}</span>
-        <p className="text-[10px] text-text-muted mt-2 uppercase tracking-wider">Dựa trên 1500 users</p>
+        <p className="text-[10px] text-text-muted mt-2 uppercase tracking-wider">Tính toán dựa trên tương tác</p>
       </Card>
     </div>
   );

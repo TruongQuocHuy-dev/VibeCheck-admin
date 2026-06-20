@@ -1,4 +1,5 @@
 import React from 'react';
+import { toast } from 'react-hot-toast';
 import { useAnalytics } from '../hooks/useAnalytics';
 import { useDateRange } from '../hooks/useDateRange';
 import { useExportReport } from '../hooks/useExportReport';
@@ -42,8 +43,7 @@ export const AnalyticsPage: React.FC = () => {
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(window.location.href);
-    // TODO: Add toast notification
-    alert('Đã sao chép liên kết báo cáo!');
+    toast.success('Đã sao chép liên kết báo cáo!');
   };
 
   return (
